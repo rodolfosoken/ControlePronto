@@ -1,0 +1,70 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.rodolfo.controlepronto.EdredomActivity">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="Adicionar Edredom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:id="@+id/textView"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/bAdicionar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="22dp"
+            android:id="@+id/edredomList" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_marginTop="33dp"
+            android:id="@+id/rolText"
+            android:hint="Nº ROL"
+            android:inputType="number"
+            android:paddingTop="10dp"
+            android:layout_below="@+id/textView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/prateleiraText"
+            android:hint="Prateleira"
+            android:layout_width="120dp"
+            android:paddingTop="10dp"
+            android:layout_alignBaseline="@+id/rolText"
+            android:layout_alignBottom="@+id/rolText"
+            android:layout_toRightOf="@+id/rolText"
+            android:layout_toEndOf="@+id/rolText"
+            android:layout_marginLeft="22dp"
+            android:layout_marginStart="22dp" />
+
+        <Button
+            android:text="Adicionar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bAdicionar"
+            android:layout_below="@+id/prateleiraText"
+            android:layout_alignRight="@+id/prateleiraText"
+            android:layout_alignEnd="@+id/prateleiraText" />
+    </RelativeLayout>
+</FrameLayout>
