@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
     public static SQLiteDatabase dados;
 
     //=========== Parametros do Banco de Dados ==========
-    private static final String NOME_BD = "ControlePronto";
-    private static final String SQL_CRIAR_BANCO = "CREATE TABLE IF NOT EXISTS edredom " +
+    public static final String NOME_BD = "ControlePronto";
+    private static final String SQL_CRIA_TABELA_EDREDOM = "CREATE TABLE IF NOT EXISTS edredom " +
             "(rol UNSIGNED BIG INT, prateleira INT(2), retirado BOOLEAN )";
 
     //===================================================
@@ -70,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        // Criando o banco de dados
+        // tenta abir o banco de dados ou cria um novo
         try{
             dados = this.openOrCreateDatabase(NOME_BD, MODE_PRIVATE, null);
-            dados.execSQL(SQL_CRIAR_BANCO);
-
+            dados.execSQL(SQL_CRIA_TABELA_EDREDOM);
+            //dados.execSQL("INSERT INTO edredom (rol, prateleira, retirado) VALUES (123, 1, 0)");
 
         }catch (Exception e){
             e.printStackTrace();

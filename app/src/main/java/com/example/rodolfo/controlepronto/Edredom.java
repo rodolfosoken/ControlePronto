@@ -7,16 +7,16 @@ package com.example.rodolfo.controlepronto;
 public class Edredom {
     private long rol;
     private int prateleira;
-    private boolean retirado;
+    private int retirado;
 
-    public Edredom(long rol, int prateleira){
+    public Edredom(long rol, int prateleira, int retirado){
         this.rol = rol;
         this.prateleira = prateleira;
-        this.retirado = false;
+        this.retirado = retirado;
     }
 
     public String toString(){
-        return this.rol + " |   " + this.prateleira;
+        return "ROL: "+this.rol + "     | Prateleira   " + this.prateleira;
     }
 
 
@@ -36,11 +36,11 @@ public class Edredom {
         this.prateleira = prateleira;
     }
 
-    public boolean isRetirado() {
+    public int getRetirado() {
         return retirado;
     }
 
-    public void setRetirado(boolean retirado) {
+    public void setRetirado(int retirado) {
         this.retirado = retirado;
     }
 }
