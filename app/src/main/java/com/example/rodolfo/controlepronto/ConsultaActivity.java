@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
-public class Consulta extends Fragment {
+public class ConsultaActivity extends Fragment {
 
     ListView edredomList;
 

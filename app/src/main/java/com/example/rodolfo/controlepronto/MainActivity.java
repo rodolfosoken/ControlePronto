@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     //=========== Parametros do Banco de Dados ==========
     public static final String NOME_BD = "ControlePronto";
     private static final String SQL_CRIA_TABELA_EDREDOM = "CREATE TABLE IF NOT EXISTS edredom " +
-            "(rol UNSIGNED BIG INT, prateleira INT(2), retirado BOOLEAN )";
+            "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, prateleira INT(2), retirado BOOLEAN )";
 
     //===================================================
 
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             //dados.execSQL("INSERT INTO edredom (rol, prateleira, retirado) VALUES (123, 1, 0)");
 
         }catch (Exception e){
-            e.printStackTrace();
+            Log.e("Erro ao criar BD",e.toString());
         }
 
 
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return new Consulta();
+                    return new ConsultaActivity();
                 case 1:
                     return new EdredomActivity();
                 case 2:

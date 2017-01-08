@@ -5,18 +5,26 @@ package com.example.rodolfo.controlepronto;
  */
 
 public class Edredom {
+    private int id;
     private long rol;
     private int prateleira;
     private int retirado;
 
-    public Edredom(long rol, int prateleira, int retirado){
+    public Edredom(long rol, int prateleira){
+        this.rol = rol;
+        this.prateleira = prateleira;
+        this.retirado = 0;
+    }
+
+    public Edredom(int id, long rol, int prateleira, int retirado){
+        this.id = id;
         this.rol = rol;
         this.prateleira = prateleira;
         this.retirado = retirado;
     }
 
     public String toString(){
-        return "ROL: "+this.rol + "     | Prateleira   " + this.prateleira;
+        return "Edredom ROL:    "+this.rol + "     |     Prateleira:     " + this.prateleira;
     }
 
 
@@ -42,5 +50,13 @@ public class Edredom {
 
     public void setRetirado(int retirado) {
         this.retirado = retirado;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

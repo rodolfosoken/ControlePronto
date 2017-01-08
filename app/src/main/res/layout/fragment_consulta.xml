@@ -2,10 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.rodolfo.controlepronto.Consulta">
+    tools:context="com.example.rodolfo.controlepronto.ConsultaActivity">
 
     <!-- TODO: Update blank fragment layout -->
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -21,30 +22,60 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
-        <EditText
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/rolEdredom"
+                android:textAlignment="center"
+                android:hint="Nº DO ROL"
+                android:inputType="number|numberSigned"
+                android:paddingTop="17dp"
+                android:layout_below="@+id/text"
+                android:layout_toLeftOf="@+id/okButton"
+                android:layout_toStartOf="@+id/okButton" />
+
+            <Button
+                android:text="OK"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/okButton"
+                android:layout_alignBottom="@+id/rolEdredom"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+        <TextView
+            android:text="--------------Edredom--------------"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:id="@+id/rolEdredom"
+            android:id="@+id/textView11"
             android:textAlignment="center"
-            android:hint="Nº DO ROL"
-            android:inputType="number|numberSigned"
-            android:layout_below="@+id/text"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:paddingTop="17dp" />
+            android:textSize="24sp"
+            android:layout_marginTop="10dp" />
 
-        <Button
-            android:text="OK"
-            android:layout_width="wrap_content"
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="165dp"
+            android:id="@+id/edredomConsulta" />
+
+        <TextView
+            android:text="--------------Tapete--------------"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="18dp"
-            android:layout_marginEnd="18dp"
-            android:layout_marginTop="33dp"
-            android:id="@+id/okButton"
-            android:layout_below="@+id/rolEdredom"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-    </RelativeLayout>
+            android:id="@+id/textTapeteConsulta"
+            android:textSize="24sp"
+            android:textAlignment="center" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tapeteConsulta" />
+
+    </LinearLayout>
 
 </FrameLayout>
