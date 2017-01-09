@@ -18,8 +18,6 @@ import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static SQLiteDatabase dados;
-
     //=========== Parametros do Banco de Dados ==========
     public static final String NOME_BD = "ControlePronto";
     private static final String SQL_CRIA_TABELA_EDREDOM = "CREATE TABLE IF NOT EXISTS edredom " +
@@ -70,12 +68,13 @@ public class MainActivity extends AppCompatActivity {
                     | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         }
 
-
+        SQLiteDatabase dados;
         // tenta abir o banco de dados ou cria um novo
         try{
             dados = this.openOrCreateDatabase(NOME_BD, MODE_PRIVATE, null);
             dados.execSQL(SQL_CRIA_TABELA_EDREDOM);
             //dados.execSQL("INSERT INTO edredom (rol, prateleira, retirado) VALUES (123, 1, 0)");
+            dados.close();
 
         }catch (Exception e){
             Log.e("Erro ao criar BD",e.toString());

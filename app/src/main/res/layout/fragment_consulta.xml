@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:id="@+id/rolEdredom"
+                android:id="@+id/rolConsulta"
                 android:textAlignment="center"
                 android:hint="Nº DO ROL"
                 android:inputType="number|numberSigned"
@@ -43,7 +43,7 @@
                 android:text="OK"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/okButton"
+                android:id="@+id/okConsulta"
                 android:layout_alignBottom="@+id/rolEdredom"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
@@ -53,7 +53,7 @@
             android:text="--------------Edredom--------------"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView11"
+            android:id="@+id/textViewEdredom"
             android:textAlignment="center"
             android:textSize="24sp"
             android:layout_marginTop="10dp" />
