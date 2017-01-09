@@ -30,6 +30,7 @@ public class EdredomActivity extends Fragment {
     public static final String SELECT_EDREDONS = "SELECT * FROM edredom ";
     public static final String INSERT_EDREDOM = "INSERT INTO edredom (rol, prateleira, retirado) VALUES ";
     public static final String DELETE_EDREDOM = "DELETE FROM edredom WHERE id = ";
+    public static final String[] COLUNAS_EDREDOM = {"id","rol", "prateleira","retirado"};
 
 
     public static List<Edredom> selectEdredom(Context context, String select){
@@ -39,10 +40,10 @@ public class EdredomActivity extends Fragment {
         try {
             Cursor c = dados.rawQuery(select, null);
 
-            int indexId = c.getColumnIndex("id");
-            int indexRol = c.getColumnIndex("rol");
-            int indexPrateleira = c.getColumnIndex("prateleira");
-            int indexRetirado = c.getColumnIndex("retirado");
+            int indexId = c.getColumnIndex(COLUNAS_EDREDOM[0]);
+            int indexRol = c.getColumnIndex(COLUNAS_EDREDOM[1]);
+            int indexPrateleira = c.getColumnIndex(COLUNAS_EDREDOM[2]);
+            int indexRetirado = c.getColumnIndex(COLUNAS_EDREDOM[3]);
 
             if(c.moveToFirst()) {
                 do {
@@ -75,7 +76,7 @@ public class EdredomActivity extends Fragment {
             //recupera o id gerado pelo banco de dados;
             Cursor c = dados.rawQuery(SELECT_EDREDONS, null);
             c.moveToLast();
-            int indexId = c.getColumnIndex("id");
+            int indexId = c.getColumnIndex(COLUNAS_EDREDOM[0]);
             if(!c.isNull(indexId)) edredom.setId(c.getInt(indexId));
 
             //aparece no topo da lista
