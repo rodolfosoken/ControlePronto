@@ -45,10 +45,10 @@ public class ConsultaActivity extends Fragment {
             if(c.getCount() == 0){
                 Toast.makeText(getContext(), "Nenhum edredom encontrado", Toast.LENGTH_SHORT).show();
             }else {
-                int indexId = c.getColumnIndex("id");
-                int indexRol = c.getColumnIndex("rol");
-                int indexPrateleira = c.getColumnIndex("prateleira");
-                int indexRetirado = c.getColumnIndex("retirado");
+                int indexId = c.getColumnIndex(EdredomActivity.COLUNAS_EDREDOM[0]);
+                int indexRol = c.getColumnIndex(EdredomActivity.COLUNAS_EDREDOM[1]);
+                int indexPrateleira = c.getColumnIndex(EdredomActivity.COLUNAS_EDREDOM[2]);
+                int indexRetirado = c.getColumnIndex(EdredomActivity.COLUNAS_EDREDOM[3]);
                 c.moveToFirst();
                 do {
                     Edredom edredom = new Edredom(c.getInt(indexId), c.getLong(indexRol), c.getInt(indexPrateleira), c.getInt(indexRetirado));

@@ -33,6 +33,7 @@ public class EdredomActivity extends Fragment {
     public static final String[] COLUNAS_EDREDOM = {"id","rol", "prateleira","retirado"};
 
 
+    //retorna a listagem com os edredons do banco de dados e tbm atualiza a lista da aba de edredons
     public static List<Edredom> selectEdredom(Context context, String select){
         List<Edredom> edredomList = new ArrayList<>();
         //tenta recuperar todos os edredons do banco de dados

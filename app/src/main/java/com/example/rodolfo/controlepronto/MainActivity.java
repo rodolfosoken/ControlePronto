@@ -18,7 +18,7 @@ import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    //=========== Parametros do Banco de Dados ==========
+    //=========== SQL do Banco de Dados ==========
     public static final String NOME_BD = "ControlePronto";
     private static final String SQL_CRIA_TABELA_EDREDOM = "CREATE TABLE IF NOT EXISTS edredom " +
             "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, prateleira INT(2), retirado BOOLEAN )";
@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         try{
             dados = this.openOrCreateDatabase(NOME_BD, MODE_PRIVATE, null);
             dados.execSQL(SQL_CRIA_TABELA_EDREDOM);
-            //dados.execSQL("INSERT INTO edredom (rol, prateleira, retirado) VALUES (123, 1, 0)");
             dados.close();
 
         }catch (Exception e){
