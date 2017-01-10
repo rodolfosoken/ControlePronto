@@ -4,20 +4,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,6 +41,8 @@ public class EdredomActivity extends Fragment {
     //retorna a listagem com os edredons do banco de dados e tbm atualiza a lista da aba de edredons
     public static List<Edredom> selectEdredom(Context context, String select){
         List<Edredom> edredomList = new ArrayList<>();
+        //limpa a lista de edredons
+        edredons.clear();
         //tenta recuperar todos os edredons do banco de dados
         SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try {
@@ -56,11 +63,11 @@ public class EdredomActivity extends Fragment {
                 } while (c.moveToNext());
             }
             c.close();
-            adaptadorEdredom.notifyDataSetChanged();
         }catch(Exception e){
             e.printStackTrace();
         }finally {
             dados.close();
+            adaptadorEdredom.notifyDataSetChanged();
         }
         return edredomList;
     }
@@ -117,9 +124,49 @@ public class EdredomActivity extends Fragment {
         return ok;
     }
 
+    //ação do botao adicionar
+    public void adicionarEdredom(View view){
+        EditText rolText = (EditText) getView().findViewById(R.id.rolEdredom);
+        EditText prateleiraText = (EditText) getView().findViewById(R.id.prateleiraText);
+        //System.out.println(rolText.getText().toString());
+
+        //verifica se a entrada está vazia antes de inserir no banco de dados
+        if(!rolText.getText().toString().isEmpty() &&  !prateleiraText.getText().toString().isEmpty()) {
+            long rol = Long.parseLong(rolText.getText().toString());
+            int prateleira = Integer.parseInt(prateleiraText.getText().toString());
+
+            Edredom edredom = new Edredom(rol, prateleira);
+            //System.out.println(edredom.toString());
+
+            //salva no banco de dados
+            if(salvaEdredom(getContext(),edredom)) {
+                //limpa a entrada
+                rolText.setText("");
+                prateleiraText.setText("");
+                rolText.requestFocus();
+                //esconde o teclado
+                /*InputMethodManager imm = (InputMethodManager) getContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);*/
+                //restaura a cor dos editTexts
+                rolText.getBackground().clearColorFilter();
+                prateleiraText.getBackground().clearColorFilter();
+            }
+        }else {
+            rolText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SCREEN);
+            prateleiraText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SCREEN);
+            Toast.makeText(this.getContext(), "Insira o Rol e prateleira", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        EditText rolText = (EditText) getView().findViewById(R.id.rolEdredom);
+        EditText prateleiraText = (EditText) getView().findViewById(R.id.prateleiraText);
+
 
         //adiciona o listener no botao adicionar
         Button buttonAdicionar = (Button) getView().findViewById(R.id.bAdicionarEdredom);
@@ -158,6 +205,21 @@ public class EdredomActivity extends Fragment {
             }
         });
 
+        //adiciona um listener para adicionar edredom ao pressionar enter
+        prateleiraText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                boolean ok = false;
+                if(i == EditorInfo.IME_ACTION_GO){
+                    ok = true;
+                    adicionarEdredom(getView());
+                }
+                return ok;
+            }
+        });
+
+
+
     }
 
     @Override
@@ -167,36 +229,5 @@ public class EdredomActivity extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edredom, container, false);
     }
-
-    //ação do botao adicionar
-    public void adicionarEdredom(View view){
-        EditText rolText = (EditText) getView().findViewById(R.id.rolEdredom);
-        EditText prateleiraText = (EditText) getView().findViewById(R.id.prateleiraText);
-        //System.out.println(rolText.getText().toString());
-
-        //verifica se a entrada está vazia antes de inserir no banco de dados
-        if(!rolText.getText().toString().isEmpty() &&  !prateleiraText.getText().toString().isEmpty()) {
-            long rol = Long.parseLong(rolText.getText().toString());
-            int prateleira = Integer.parseInt(prateleiraText.getText().toString());
-
-            Edredom edredom = new Edredom(rol, prateleira);
-            //System.out.println(edredom.toString());
-
-            //salva no banco de dados
-            if(salvaEdredom(getContext(),edredom)) {
-                //limpa a entrada
-                rolText.setText("");
-                prateleiraText.setText("");
-                rolText.requestFocus();
-                //esconde o teclado
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
-        }else {
-            Toast.makeText(this.getContext(), "Insira o Rol e prateleira", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
 
 }

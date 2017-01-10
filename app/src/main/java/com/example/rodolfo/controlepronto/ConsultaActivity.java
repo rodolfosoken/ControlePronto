@@ -9,9 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -115,7 +117,7 @@ public class ConsultaActivity extends Fragment {
                                     edredons.remove(index);
                                     adaptadorEdredom.notifyDataSetChanged();
                                     textEdredom.setText("Edredom | Qtd.: "+edredons.size());
-                                    //atualiza a atividade edredom apos modificar o banco de dados
+                                    //atualiza a aba de edredons apos modificar o banco de dados nesta tela
                                     EdredomActivity.selectEdredom(getContext(), EdredomActivity.SELECT_EDREDONS);
                                 }catch (Exception e){
                                     Log.e("Erro del edredom ",e.toString());
@@ -128,6 +130,18 @@ public class ConsultaActivity extends Fragment {
             }
         });
 
+        //adicionar listener para fazer consulta ao pressionar enter
+        rolText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                boolean ok = false;
+                if (i == EditorInfo.IME_ACTION_GO){
+                    consulta(getView());
+                    ok = true;
+                }
+                return ok;
+            }
+        });
     }
 
     @Override

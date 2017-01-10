@@ -18,10 +18,14 @@ import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    //=========== SQL do Banco de Dados ==========
+    //=========== SQL para criar o Banco de Dados ==========
     public static final String NOME_BD = "ControlePronto";
     private static final String SQL_CRIA_TABELA_EDREDOM = "CREATE TABLE IF NOT EXISTS edredom " +
             "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, prateleira INT(2), retirado BOOLEAN )";
+    private static final String SQL_CRIA_TABELA_TAPETE = "CREATE TABLE IF NOT EXISTS tapete " +
+            "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, metragem INTEGER, retirado BOOLEAN)";
+    private static final String SQL_CRIA_TABELA_HISTORICO = "CREATE TABLE IF NOT EXISTS historico " +
+            "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, data DATE)";
 
     //===================================================
 
@@ -69,10 +73,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         SQLiteDatabase dados;
-        // tenta abir o banco de dados ou cria um novo
+        // CRIA O BANCO DE DADOS E AS TABELAS SE NÃO EXISTIR
         try{
             dados = this.openOrCreateDatabase(NOME_BD, MODE_PRIVATE, null);
             dados.execSQL(SQL_CRIA_TABELA_EDREDOM);
+            dados.execSQL(SQL_CRIA_TABELA_TAPETE);
+            dados.execSQL(SQL_CRIA_TABELA_HISTORICO);
             dados.close();
 
         }catch (Exception e){
@@ -98,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.item_historico) {
+            Log.i("Menu", "Historico selecionado");
             return true;
         }
 

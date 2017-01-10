@@ -17,7 +17,7 @@
             android:id="@+id/text"
             android:textAlignment="center"
             android:textSize="24sp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -37,7 +37,8 @@
                 android:paddingTop="17dp"
                 android:layout_below="@+id/text"
                 android:layout_toLeftOf="@+id/okButton"
-                android:layout_toStartOf="@+id/okButton" />
+                android:layout_toStartOf="@+id/okButton"
+                android:imeOptions="actionGo" />
 
             <Button
                 android:text="OK"
@@ -56,12 +57,13 @@
             android:id="@+id/textViewEdredom"
             android:textAlignment="center"
             android:textSize="24sp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="5dp" />
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="165dp"
-            android:id="@+id/edredomConsulta" />
+            android:id="@+id/edredomConsulta"
+            android:fadeScrollbars="false" />
 
         <TextView
             android:text="--------------Tapete--------------"
@@ -74,7 +76,9 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/tapeteConsulta" />
+            android:id="@+id/tapeteConsulta"
+            android:fadeScrollbars="false"
+            android:scrollbarSize="15dp" />
 
     </LinearLayout>
 
