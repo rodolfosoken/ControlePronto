@@ -39,14 +39,14 @@ public class EdredomActivity extends Fragment {
 
 
     //retorna a listagem com os edredons do banco de dados e tbm atualiza a lista da aba de edredons
-    public static List<Edredom> selectEdredom(Context context, String select){
+    public static List<Edredom> selectEdredom(Context context){
         List<Edredom> edredomList = new ArrayList<>();
         //limpa a lista de edredons
         edredons.clear();
         //tenta recuperar todos os edredons do banco de dados
         SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try {
-            Cursor c = dados.rawQuery(select, null);
+            Cursor c = dados.rawQuery(SELECT_EDREDONS, null);
 
             int indexId = c.getColumnIndex(COLUNAS_EDREDOM[0]);
             int indexRol = c.getColumnIndex(COLUNAS_EDREDOM[1]);
@@ -55,7 +55,8 @@ public class EdredomActivity extends Fragment {
 
             if(c.moveToFirst()) {
                 do {
-                    Edredom edredom = new Edredom(c.getInt(indexId), c.getLong(indexRol), c.getInt(indexPrateleira), c.getInt(indexRetirado));
+                    Edredom edredom = new Edredom(c.getInt(indexId), c.getLong(indexRol),
+                            c.getInt(indexPrateleira), c.getInt(indexRetirado));
                     //add no indice 0 para inverter a ordem da lista
                     edredomList.add(0, edredom);
                     edredons.add(0,edredom);
@@ -145,7 +146,8 @@ public class EdredomActivity extends Fragment {
                 prateleiraText.setText("");
                 rolText.requestFocus();
                 //esconde o teclado
-                /*InputMethodManager imm = (InputMethodManager) getContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
+                /*InputMethodManager imm = (InputMethodManager)
+                getContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);*/
                 //restaura a cor dos editTexts
                 rolText.getBackground().clearColorFilter();
@@ -183,7 +185,7 @@ public class EdredomActivity extends Fragment {
         adaptadorEdredom = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, edredons);
         edredomList.setAdapter(adaptadorEdredom);
 
-        selectEdredom(getContext(), SELECT_EDREDONS);
+        selectEdredom(getContext());
 
         //listener para excluir edredons do banco de dados
         edredomList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

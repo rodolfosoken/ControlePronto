@@ -23,7 +23,8 @@
                 android:id="@+id/rolTapete"
                 android:hint="Nº ROL"
                 android:textSize="24sp"
-                android:paddingTop="17dp" />
+                android:paddingTop="17dp"
+                android:imeOptions="actionNext" />
 
             <EditText
                 android:layout_width="114dp"
@@ -33,7 +34,8 @@
                 android:hint="m²"
                 android:textSize="24sp"
                 android:paddingTop="17dp"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:imeOptions="actionGo" />
 
             <Button
                 android:text="Add"

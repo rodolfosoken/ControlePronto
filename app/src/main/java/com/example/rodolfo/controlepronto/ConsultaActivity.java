@@ -118,7 +118,7 @@ public class ConsultaActivity extends Fragment {
                                     adaptadorEdredom.notifyDataSetChanged();
                                     textEdredom.setText("Edredom | Qtd.: "+edredons.size());
                                     //atualiza a aba de edredons apos modificar o banco de dados nesta tela
-                                    EdredomActivity.selectEdredom(getContext(), EdredomActivity.SELECT_EDREDONS);
+                                    EdredomActivity.selectEdredom(getContext());
                                 }catch (Exception e){
                                     Log.e("Erro del edredom ",e.toString());
                                 }finally {
@@ -151,7 +151,5 @@ public class ConsultaActivity extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_consulta, container, false);
     }
-
-
 
 }
