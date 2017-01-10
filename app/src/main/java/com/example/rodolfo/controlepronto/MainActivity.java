@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String SQL_CRIA_TABELA_EDREDOM = "CREATE TABLE IF NOT EXISTS edredom " +
             "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, prateleira INT(2), retirado BOOLEAN )";
     private static final String SQL_CRIA_TABELA_TAPETE = "CREATE TABLE IF NOT EXISTS tapete " +
-            "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, metragem INTEGER, retirado BOOLEAN)";
+            "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, metragem DOUBLE, retirado BOOLEAN)";
     private static final String SQL_CRIA_TABELA_HISTORICO = "CREATE TABLE IF NOT EXISTS historico " +
             "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, data DATE)";
 

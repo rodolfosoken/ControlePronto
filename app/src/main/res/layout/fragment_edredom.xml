@@ -10,20 +10,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_below="@+id/bAdicionarEdredom"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <Button
-            android:text="Adicionar Edredom"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/bAdicionarEdredom"
-            android:layout_centerHorizontal="true" />
+            android:weightSum="1">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="177dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/rolEdredom"
+                android:hint="Nº ROL"
+                android:inputType="number"
+                android:paddingTop="17dp"
+                android:imeOptions="actionNext"
+                android:textSize="24sp"
+                android:layout_weight="0.84" />
 
             <EditText
                 android:layout_height="wrap_content"
@@ -31,30 +37,19 @@
                 android:ems="10"
                 android:id="@+id/prateleiraText"
                 android:hint="Prateleira"
-                android:layout_width="120dp"
-                android:paddingTop="10dp"
-                android:layout_alignBaseline="@+id/rolEdredom"
-                android:layout_alignBottom="@+id/rolEdredom"
-                android:layout_toRightOf="@+id/rolEdredom"
-                android:layout_toEndOf="@+id/rolEdredom"
-                android:layout_marginLeft="22dp"
-                android:layout_marginStart="22dp"
-                android:imeOptions="actionGo" />
+                android:layout_width="114dp"
+                android:imeOptions="actionGo"
+                android:textSize="24sp"
+                android:paddingTop="17dp" />
 
-            <EditText
-                android:layout_width="wrap_content"
+            <Button
+                android:text="Add"
+                android:layout_width="72dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:layout_marginTop="16dp"
-                android:id="@+id/rolEdredom"
-                android:hint="Nº ROL"
-                android:inputType="number"
-                android:paddingTop="10dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:imeOptions="actionNext" />
-
-        </RelativeLayout>
+                android:id="@+id/bAdicionarEdredom"
+                android:layout_centerHorizontal="true"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <ListView
             android:layout_width="match_parent"
