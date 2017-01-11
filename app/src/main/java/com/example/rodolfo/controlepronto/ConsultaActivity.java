@@ -38,13 +38,16 @@ public class ConsultaActivity extends Fragment {
     TextView tapeteText;
 
     public void consulta(View view){
+        String rolConsulta = rolText.getText().toString();
+
+        //============ CONSULTA DE EDREDOM =========
+
         //limpa a busca
         edredons.clear();
 
-        //============ CONSULTA DE EDREDOM =========
-        SQLiteDatabase dados = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+        SQLiteDatabase dadosEdredom = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try{
-            Cursor c = dados.rawQuery(EdredomActivity.SELECT_EDREDONS+ "WHERE rol = " + rolText.getText().toString(), null);
+            Cursor c = dadosEdredom.rawQuery(EdredomActivity.SELECT_EDREDONS+ "WHERE rol = " + rolConsulta, null);
 
             textEdredom.setText("Edredom | Qtd.: "+c.getCount());
             if(c.getCount() == 0){
@@ -70,9 +73,44 @@ public class ConsultaActivity extends Fragment {
             Log.e("Erro consulta Edredom", e.toString());
             e.printStackTrace();
         }finally {
-            dados.close();
+            dadosEdredom.close();
         }
         adaptadorEdredom.notifyDataSetChanged();
+
+        //============== CONSULTA DE TAPETES ===========
+
+        //limpa a consulta de tapetes
+        tapetes.clear();
+
+        SQLiteDatabase dadosTapete = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+        try{
+            Cursor cT = dadosTapete.rawQuery(TapeteActivity.SELECT_TAPETES + "WHERE rol = "+rolConsulta, null);
+
+            if(cT.getCount() == 0) {
+                Toast.makeText(getContext(), "Nenhum tapete encontrado", Toast.LENGTH_SHORT).show();
+            }else{
+                int indexId = cT.getColumnIndex(TapeteActivity.COLUNAS_TAPETE[0]);
+                int indexRol = cT.getColumnIndex(TapeteActivity.COLUNAS_TAPETE[1]);
+                int indexMetragem = cT.getColumnIndex(TapeteActivity.COLUNAS_TAPETE[2]);
+
+                if (cT.moveToFirst()) {
+                    do {
+                        Tapete tapete = new Tapete(cT.getInt(indexId), cT.getLong(indexRol), cT.getDouble(indexMetragem));
+                        tapetes.add(0, tapete);
+                    } while (cT.moveToNext());
+                }
+                rolText.setText("");
+                //esconde o teclado
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+            cT.close();
+        }catch (Exception e){
+            Log.e("BD select Tapete", e.toString());
+        }finally {
+            dadosTapete.close();
+        }
+        adaptadorTapete.notifyDataSetChanged();
     }
 
     @Override
