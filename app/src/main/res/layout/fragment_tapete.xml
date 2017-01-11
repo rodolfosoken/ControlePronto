@@ -13,10 +13,11 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:weightSum="1">
 
             <EditText
-                android:layout_width="184dp"
+                android:layout_width="132dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:ems="10"
@@ -24,10 +25,11 @@
                 android:hint="Nº ROL"
                 android:textSize="24sp"
                 android:paddingTop="17dp"
-                android:imeOptions="actionNext" />
+                android:imeOptions="actionNext"
+                android:layout_weight="1.50" />
 
             <EditText
-                android:layout_width="114dp"
+                android:layout_width="77dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:id="@+id/metragemText"
@@ -35,6 +37,17 @@
                 android:textSize="24sp"
                 android:paddingTop="17dp"
                 android:inputType="numberDecimal"
+                android:imeOptions="actionNext" />
+
+            <EditText
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/posicaoTapete"
+                android:hint="Pos."
+                android:textSize="24sp"
+                android:paddingTop="17dp"
                 android:imeOptions="actionGo" />
 
             <Button

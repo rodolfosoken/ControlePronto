@@ -8,21 +8,23 @@ public class Tapete {
     private int id;
     private long rol;
     private double metragem;
-    private int retirado;
+    private int posicao;
 
-    public Tapete(long rol, double metragem) {
+    public Tapete(long rol, double metragem, int posicao) {
         this.rol = rol;
         this.metragem = metragem;
+        this.posicao = posicao;
     }
 
-    public Tapete(int id, long rol, double metragem) {
+    public Tapete(int id, long rol, double metragem, int posicao) {
         this.id = id;
         this.rol = rol;
         this.metragem = metragem;
+        this.posicao = posicao;
     }
 
     public String toString(){
-        return "Tapete Rol:     "+this.rol+"    |        "+this.metragem+ "    m²";
+        return "Tap. Rol:     "+this.rol+"    |   "+this.metragem+ "    m²   |  Pos.:  "+this.posicao;
     }
 
     public int getId() {
@@ -49,11 +51,12 @@ public class Tapete {
         this.metragem = metragem;
     }
 
-    public int getRetirado() {
-        return retirado;
+
+    public int getPosicao() {
+        return posicao;
     }
 
-    public void setRetirado(int retirado) {
-        this.retirado = retirado;
+    public void setPosicao(int posicao) {
+        this.posicao = posicao;
     }
 }

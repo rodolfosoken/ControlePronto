@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String SQL_CRIA_TABELA_EDREDOM = "CREATE TABLE IF NOT EXISTS edredom " +
             "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, prateleira INT(2), retirado BOOLEAN )";
     private static final String SQL_CRIA_TABELA_TAPETE = "CREATE TABLE IF NOT EXISTS tapete " +
-            "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, metragem DOUBLE, retirado BOOLEAN)";
+            "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, metragem DOUBLE, posicao INTEGER)";
     private static final String SQL_CRIA_TABELA_HISTORICO = "CREATE TABLE IF NOT EXISTS historico " +
             "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, data VARCHAR)";
 
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
             dados.execSQL(SQL_CRIA_TABELA_EDREDOM);
             dados.execSQL(SQL_CRIA_TABELA_TAPETE);
             dados.execSQL(SQL_CRIA_TABELA_HISTORICO);
+            //dados.execSQL("ALTER TABLE tapete ADD COLUMN posicao INTEGER");
             dados.close();
 
         }catch (Exception e){

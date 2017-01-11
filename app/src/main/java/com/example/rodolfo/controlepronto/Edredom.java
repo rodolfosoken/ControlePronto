@@ -24,7 +24,7 @@ public class Edredom {
     }
 
     public String toString(){
-        return "Edredom ROL:    "+this.rol + "     |     Prateleira:     " + this.prateleira;
+        return "Edredom ROL:    "+this.rol + "     |     Prat.:     " + this.prateleira;
     }
 
 

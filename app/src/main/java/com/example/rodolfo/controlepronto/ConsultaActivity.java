@@ -109,10 +109,12 @@ public class ConsultaActivity extends Fragment {
                 int indexId = cT.getColumnIndex(TapeteActivity.COLUNAS_TAPETE[0]);
                 int indexRol = cT.getColumnIndex(TapeteActivity.COLUNAS_TAPETE[1]);
                 int indexMetragem = cT.getColumnIndex(TapeteActivity.COLUNAS_TAPETE[2]);
+                int indexPosicao = cT.getColumnIndex(TapeteActivity.COLUNAS_TAPETE[3]);
 
                 if (cT.moveToFirst()) {
                     do {
-                        Tapete tapete = new Tapete(cT.getInt(indexId), cT.getLong(indexRol), cT.getDouble(indexMetragem));
+                        Tapete tapete = new Tapete(cT.getInt(indexId), cT.getLong(indexRol),
+                                cT.getDouble(indexMetragem), cT.getInt(indexPosicao));
                         tapetes.add(0, tapete);
                     } while (cT.moveToNext());
                 }
