@@ -1,5 +1,6 @@
 package com.example.rodolfo.controlepronto;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String SQL_CRIA_TABELA_TAPETE = "CREATE TABLE IF NOT EXISTS tapete " +
             "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, metragem DOUBLE, retirado BOOLEAN)";
     private static final String SQL_CRIA_TABELA_HISTORICO = "CREATE TABLE IF NOT EXISTS historico " +
-            "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, data DATE)";
+            "(id INTEGER PRIMARY KEY, rol UNSIGNED BIG INT, data VARCHAR)";
 
     //===================================================
 
@@ -105,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.item_historico) {
-            Log.i("Menu", "Historico selecionado");
+            Intent intent = new Intent(this, HistoricoActivity.class);
+            startActivity(intent);
             return true;
         }
 

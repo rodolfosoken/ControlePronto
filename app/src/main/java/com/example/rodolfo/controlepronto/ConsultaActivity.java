@@ -24,7 +24,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -37,6 +39,7 @@ public class ConsultaActivity extends Fragment {
     public static String rolConsulta;
     public static final String DELETE_TAPETE_ROL = "DELETE FROM tapete WHERE rol = ";
     public static final String DELETE_EDREDOM_ROL = "DELETE FROM edredom WHERE rol = ";
+    public static final String INSERT_REGISTRO_HISTORICO = "INSERT INTO historico (rol, data) VALUES ";
     EditText rolText;
     TextView textEdredom;
     TextView tapeteText;
@@ -44,12 +47,23 @@ public class ConsultaActivity extends Fragment {
     public void consulta(View view){
         rolConsulta = rolText.getText().toString();
 
+        SQLiteDatabase dados = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+
+        // =======  REGISTRA CONSULTA NO HISTORICO =======
+
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("DD-MM-yyyy");
+            String currentDateandTime = sdf.format(new Date());
+            dados.execSQL(INSERT_REGISTRO_HISTORICO+ "("+rolConsulta+", '"+currentDateandTime+"')");
+        }catch (Exception e){
+            Log.e("Registro no historico", e.toString());
+        }
+
+
         //============ CONSULTA DE EDREDOM =========
 
         //limpa a busca
         edredons.clear();
-
-        SQLiteDatabase dados = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try{
             Cursor c = dados.rawQuery(EdredomActivity.SELECT_EDREDONS+ "WHERE rol = " + rolConsulta, null);
 
