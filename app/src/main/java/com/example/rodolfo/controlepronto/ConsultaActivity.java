@@ -52,7 +52,7 @@ public class ConsultaActivity extends Fragment {
         // =======  REGISTRA CONSULTA NO HISTORICO =======
 
         try{
-            SimpleDateFormat sdf = new SimpleDateFormat("DD-MM-yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("DD-MM-yyyy HH:MM");
             String currentDateandTime = sdf.format(new Date());
             dados.execSQL(INSERT_REGISTRO_HISTORICO+ "("+rolConsulta+", '"+currentDateandTime+"')");
         }catch (Exception e){
@@ -130,38 +130,42 @@ public class ConsultaActivity extends Fragment {
         adaptadorTapete.notifyDataSetChanged();
     }
 
-    public void deleteRol(View view){
+    public void deleteRol(View view) {
 
-       new AlertDialog.Builder(getContext())
-        .setIcon(android.R.drawable.ic_delete)
-        .setTitle("Excluir")
-        .setMessage("Excluir todos os itens do Rol "+ rolConsulta +"?")
-        .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i2) {
-                SQLiteDatabase dados = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
-                try {
-                    dados.execSQL(DELETE_EDREDOM_ROL + rolConsulta);
-                    dados.execSQL(DELETE_TAPETE_ROL+ rolConsulta);
-                    Toast.makeText(getContext(), "Rol excluido: "+rolConsulta, Toast.LENGTH_SHORT).show();
-                    edredons.clear();
-                    tapetes.clear();
-                    tapeteText.setText("Edredom | Qtd.: "+tapetes.size());
-                    textEdredom.setText("Tapete | Qtd.: "+edredons.size());
-                    //atualiza a aba de tapetes apos modificar o banco de dados nesta tela
-                    TapeteActivity.selectTapete(getContext());
-                    EdredomActivity.selectEdredom(getContext());
-                }catch (Exception e){
-                    Log.e("Erro delete Rol ",e.toString());
-                }finally {
-                    dados.close();
-                    adaptadorEdredom.notifyDataSetChanged();
-                    adaptadorTapete.notifyDataSetChanged();
-                }
-            }
-        })
-        .setNegativeButton("Cancelar", null).show();
+        if (rolConsulta != null) {
+            new AlertDialog.Builder(getContext())
+                    .setIcon(android.R.drawable.ic_delete)
+                    .setTitle("Excluir")
+                    .setMessage("Excluir todos os itens do Rol " + rolConsulta + "?")
+                    .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i2) {
+                            SQLiteDatabase dados = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+                            try {
+                                dados.execSQL(DELETE_EDREDOM_ROL + rolConsulta);
+                                dados.execSQL(DELETE_TAPETE_ROL + rolConsulta);
+                                Toast.makeText(getContext(), "Rol excluido: " + rolConsulta, Toast.LENGTH_SHORT).show();
+                                edredons.clear();
+                                tapetes.clear();
+                                tapeteText.setText("Edredom | Qtd.: " + tapetes.size());
+                                textEdredom.setText("Tapete | Qtd.: " + edredons.size());
+                                //atualiza a aba de tapetes apos modificar o banco de dados nesta tela
+                                TapeteActivity.selectTapete(getContext());
+                                EdredomActivity.selectEdredom(getContext());
+                            } catch (Exception e) {
+                                Log.e("Erro delete Rol ", e.toString());
+                            } finally {
+                                dados.close();
+                                adaptadorEdredom.notifyDataSetChanged();
+                                adaptadorTapete.notifyDataSetChanged();
+                            }
+                        }
+                    })
+                    .setNegativeButton("Cancelar", null).show();
 
+        }else{
+            Toast.makeText(getContext(), "Nenhum rol selecionado", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
