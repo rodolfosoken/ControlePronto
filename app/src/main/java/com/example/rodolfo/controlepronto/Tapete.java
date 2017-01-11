@@ -24,7 +24,7 @@ public class Tapete {
     }
 
     public String toString(){
-        return "Tap. Rol:     "+this.rol+"    |   "+this.metragem+ "    m²   |  Pos.:  "+this.posicao;
+        return "Tap. Rol:   "+this.rol+"  |  "+this.metragem+ "   m²  | Pos.:  "+this.posicao;
     }
 
     public int getId() {

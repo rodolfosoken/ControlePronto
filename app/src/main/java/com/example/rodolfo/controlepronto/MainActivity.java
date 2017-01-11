@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
             dados.execSQL(SQL_CRIA_TABELA_EDREDOM);
             dados.execSQL(SQL_CRIA_TABELA_TAPETE);
             dados.execSQL(SQL_CRIA_TABELA_HISTORICO);
-            //dados.execSQL("ALTER TABLE tapete ADD COLUMN posicao INTEGER");
             dados.close();
 
         }catch (Exception e){
