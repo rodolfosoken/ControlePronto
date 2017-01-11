@@ -1,9 +1,11 @@
 package com.example.rodolfo.controlepronto;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -37,7 +39,10 @@ public class TapeteActivity extends Fragment {
     public static final String SELECT_TAPETES = "SELECT * FROM tapete ";
     public static final String INSERT_TAPETE = "INSERT INTO tapete (rol, metragem, posicao) VALUES ";
     public static final String DELETE_TAPETE = "DELETE FROM tapete WHERE id = ";
+    public static final String UPDATE_TAPETE = "UPDATE tapete SET rol = ?, metragem = ?, posicao = ? WHERE id = ?";
     public static final String[] COLUNAS_TAPETE = {"id","rol", "metragem","posicao"};
+    private boolean isEditando;
+    private int indexEditando;
 
 
     public static List<Tapete> selectTapete(Context context){
@@ -55,7 +60,8 @@ public class TapeteActivity extends Fragment {
 
             if (c.moveToFirst()){
                 do {
-                    Tapete tapete = new Tapete(c.getInt(indexId), c.getLong(indexRol), c.getDouble(indexMetragem), c.getInt(indexPosicao));
+                    Tapete tapete = new Tapete(c.getInt(indexId), c.getLong(indexRol),
+                            c.getDouble(indexMetragem), c.getInt(indexPosicao));
                     tapetesList.add(0, tapete);
                     tapetes.add(0, tapete);
                 }while(c.moveToNext());
@@ -75,19 +81,32 @@ public class TapeteActivity extends Fragment {
         boolean ok = false;
         SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try {
-            dados.execSQL(INSERT_TAPETE + " (" +tapete.getRol() + ", "
-                    + tapete.getMetragem()+","+tapete.getPosicao()+")");
-            //recuperar o id gerado pelo banco de dados
-            Cursor c = dados.rawQuery(SELECT_TAPETES, null);
-            int indexId = c.getColumnIndex("id");
-            if(c.moveToLast()) {
-                tapete.setId(c.getInt(indexId));
-                tapetes.add(0, tapete);
+            if(!isEditando) {
+                dados.execSQL(INSERT_TAPETE + " (" + tapete.getRol() + ", "
+                        + tapete.getMetragem() + "," + tapete.getPosicao() + ")");
+                //recuperar o id gerado pelo banco de dados
+                Cursor c = dados.rawQuery(SELECT_TAPETES, null);
+                int indexId = c.getColumnIndex("id");
+                if (c.moveToLast()) {
+                    tapete.setId(c.getInt(indexId));
+                    tapetes.add(0, tapete);
+                }
+                ok = true;
+                c.close();
+            }else{
+                ContentValues cv = new ContentValues();
+                cv.put("rol", tapete.getRol());
+                cv.put("metragem", tapete.getMetragem());
+                cv.put("posicao", tapete.getPosicao());
+                dados.update("tapete",cv,"id = "+tapete.getId(),null);
+                tapetes.set(indexEditando, tapete);
+                isEditando = false;
+                indexEditando = -1;
+                ok = true;
             }
-            ok = true;
-            c.close();
         }catch(Exception e){
             Log.e("BD adicionar tapete", e.toString());
+            e.printStackTrace();
         }finally {
             dados.close();
             adaptadorTapete.notifyDataSetChanged();
@@ -100,11 +119,16 @@ public class TapeteActivity extends Fragment {
         if(!tapeteRol.getText().toString().isEmpty()
                 && !metragemText.getText().toString().isEmpty()
                 && !posicaoTapete.getText().toString().isEmpty()) {
+
             long rol = Long.parseLong(tapeteRol.getText().toString());
             double metragem = Double.parseDouble(metragemText.getText().toString());
             int posicao = Integer.parseInt(posicaoTapete.getText().toString());
-            Tapete tapete = new Tapete(rol, metragem, posicao);
-
+           Tapete tapete;
+            if(!isEditando) {
+                 tapete = new Tapete(rol, metragem, posicao);
+            }else{
+                tapete = new Tapete(tapetes.get(indexEditando).getId(), rol, metragem, posicao);
+            }
             if(salvarTapete(getContext(),tapete)){
                 tapeteRol.setText("");
                 metragemText.setText("");
@@ -146,7 +170,21 @@ public class TapeteActivity extends Fragment {
 
     public boolean atualizaTapete(Context context, int index){
         boolean ok = false;
+        isEditando = true;
+        indexEditando = index;
+        SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+        try{
+            //carrega informações nos campos
+            tapeteRol.setText(String.valueOf(tapetes.get(index).getRol()));
+            metragemText.setText(String.valueOf(tapetes.get(index).getMetragem()));
+            posicaoTapete.setText(String.valueOf(tapetes.get(index).getPosicao()));
 
+            ok = true;
+        }catch (Exception e){
+            Log.e("BD atualizar tapete", e.toString());
+        }finally {
+            dados.close();
+        }
         return ok;
     }
 
@@ -154,6 +192,7 @@ public class TapeteActivity extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        isEditando = false;
         posicaoTapete = (EditText) getView().findViewById(R.id.posicaoTapete);
         tapeteRol = (EditText) getView().findViewById(R.id.rolTapete);
         metragemText = (EditText) getView().findViewById(R.id.metragemText);
@@ -173,6 +212,26 @@ public class TapeteActivity extends Fragment {
                 final int index = i;
                 //cria um alerta antes de excluir um tapete
                 new AlertDialog.Builder(getContext())
+                        .setIcon(android.R.drawable.ic_menu_edit)
+                        .setTitle("Editar")
+                        .setMessage("Editar o Rol "+ tapetes.get(index).getRol()+"?")
+                        .setPositiveButton("Editar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i2) {
+                                //editar
+                                atualizaTapete(getContext(), index);
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null).show();
+            }
+        });
+
+        tapeteListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final int index = i;
+                //cria um alerta antes de excluir um tapete
+                new AlertDialog.Builder(getContext())
                         .setIcon(android.R.drawable.ic_delete)
                         .setTitle("Excluir")
                         .setMessage("Excluir o Rol "+ tapetes.get(index).getRol()+"?")
@@ -183,16 +242,9 @@ public class TapeteActivity extends Fragment {
                             }
                         })
                         .setNegativeButton("Cancelar", null).show();
+                return true;
             }
         });
-
-/*        tapeteListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                return false;
-            }
-        });*/
 
         //coloca o listener no botao
         bAdd.setOnClickListener(new View.OnClickListener() {
