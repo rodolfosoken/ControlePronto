@@ -1,5 +1,6 @@
 package com.example.rodolfo.controlepronto;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -36,6 +37,10 @@ public class EdredomActivity extends Fragment {
     public static final String INSERT_EDREDOM = "INSERT INTO edredom (rol, prateleira, retirado) VALUES ";
     public static final String DELETE_EDREDOM = "DELETE FROM edredom WHERE id = ";
     public static final String[] COLUNAS_EDREDOM = {"id","rol", "prateleira","retirado"};
+    private EditText rolText;
+    private EditText prateleiraText;
+    private boolean isEditando;
+    private int indexEditando;
 
 
     //retorna a listagem com os edredons do banco de dados e tbm atualiza a lista da aba de edredons
@@ -73,33 +78,43 @@ public class EdredomActivity extends Fragment {
         return edredomList;
     }
 
-    public static boolean salvaEdredom(Context context, Edredom edredom){
+    public boolean salvaEdredom(Context context, Edredom edredom){
         boolean ok = false;
         SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try {
+            if(!isEditando) {
+                dados.execSQL(INSERT_EDREDOM +
+                        "(" + edredom.getRol() + ", " + edredom.getPrateleira() +
+                        ", " + edredom.getRetirado() + ")");
 
-            dados.execSQL(INSERT_EDREDOM +
-                    "(" + edredom.getRol() + ", " + edredom.getPrateleira() +
-                    ", " + edredom.getRetirado() + ")");
+                //recupera o id gerado pelo banco de dados;
+                Cursor c = dados.rawQuery(SELECT_EDREDONS, null);
+                c.moveToLast();
+                int indexId = c.getColumnIndex(COLUNAS_EDREDOM[0]);
+                if (!c.isNull(indexId)) edredom.setId(c.getInt(indexId));
 
-            //recupera o id gerado pelo banco de dados;
-            Cursor c = dados.rawQuery(SELECT_EDREDONS, null);
-            c.moveToLast();
-            int indexId = c.getColumnIndex(COLUNAS_EDREDOM[0]);
-            if(!c.isNull(indexId)) edredom.setId(c.getInt(indexId));
+                //aparece no topo da lista
+                edredons.add(0, edredom);
 
-            //aparece no topo da lista
-            edredons.add(0,edredom);
-            //atualiza a lista
-            adaptadorEdredom.notifyDataSetChanged();
-
-            c.close();
-            ok = true;
+                c.close();
+                ok = true;
+            }else{
+                ContentValues cv = new ContentValues();
+                cv.put(COLUNAS_EDREDOM[1], edredom.getRol());
+                cv.put(COLUNAS_EDREDOM[2], edredom.getPrateleira());
+                dados.update("edredom",cv,"id = "+edredom.getId(),null);
+                edredons.set(indexEditando, edredom);
+                isEditando = false;
+                indexEditando = -1;
+                ok = true;
+            }
         } catch (Exception e) {
             Log.e("Erro ao add Edredom", e.toString());
         }finally {
             dados.close();
             Log.i("BD close","edredom activity");
+            //atualiza a lista
+            adaptadorEdredom.notifyDataSetChanged();
         }
         return ok;
     }
@@ -136,9 +151,13 @@ public class EdredomActivity extends Fragment {
             long rol = Long.parseLong(rolText.getText().toString());
             int prateleira = Integer.parseInt(prateleiraText.getText().toString());
 
-            Edredom edredom = new Edredom(rol, prateleira);
-            //System.out.println(edredom.toString());
-
+            Edredom edredom;
+            if (!isEditando) {
+                edredom = new Edredom(rol, prateleira);
+                //System.out.println(edredom.toString());
+            }else{
+                edredom = new Edredom(edredons.get(indexEditando).getId(), rol, prateleira, 0);
+            }
             //salva no banco de dados
             if(salvaEdredom(getContext(),edredom)) {
                 //limpa a entrada
@@ -162,12 +181,32 @@ public class EdredomActivity extends Fragment {
     }
 
 
+    public boolean atualizaEdredom(Context context, int index){
+        boolean ok = false;
+        isEditando = true;
+        indexEditando = index;
+        SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+        try{
+            //carrega informações nos campos
+            rolText.setText(String.valueOf(edredons.get(index).getRol()));
+            prateleiraText.setText(String.valueOf(edredons.get(index).getPrateleira()));
+
+            ok = true;
+        }catch (Exception e){
+            Log.e("BD atualizar edredom", e.toString());
+        }finally {
+            dados.close();
+        }
+        return ok;
+    }
+
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        EditText rolText = (EditText) getView().findViewById(R.id.rolEdredom);
-        EditText prateleiraText = (EditText) getView().findViewById(R.id.prateleiraText);
+        rolText = (EditText) getView().findViewById(R.id.rolEdredom);
+        prateleiraText = (EditText) getView().findViewById(R.id.prateleiraText);
 
 
         //adiciona o listener no botao adicionar
@@ -187,10 +226,31 @@ public class EdredomActivity extends Fragment {
 
         selectEdredom(getContext());
 
-        //listener para excluir edredons do banco de dados
+        //listener para atualizar edredons do banco de dados
         edredomList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final int index = i;
+                //cria um alerta antes de excluir um edredom
+                new AlertDialog.Builder(getContext())
+                        .setIcon(android.R.drawable.ic_menu_edit)
+                        .setTitle("Editar")
+                        .setMessage("Editar o Rol "+ edredons.get(index).getRol()+"?")
+                        .setPositiveButton("Editar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i2) {
+                                //editar
+                                atualizaEdredom(getContext(), index);
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null).show();
+            }
+        });
+
+        //adiciona listener para excluir com pressionar longo
+        edredomList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final int index = i;
                 //cria um alerta antes de excluir um edredom
                 new AlertDialog.Builder(getContext())
@@ -200,10 +260,11 @@ public class EdredomActivity extends Fragment {
                         .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i2) {
-                               removeEdredom(getContext(),index);
+                                removeEdredom(getContext(),index);
                             }
                         })
                         .setNegativeButton("Cancelar", null).show();
+                return true;
             }
         });
 

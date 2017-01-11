@@ -39,7 +39,6 @@ public class TapeteActivity extends Fragment {
     public static final String SELECT_TAPETES = "SELECT * FROM tapete ";
     public static final String INSERT_TAPETE = "INSERT INTO tapete (rol, metragem, posicao) VALUES ";
     public static final String DELETE_TAPETE = "DELETE FROM tapete WHERE id = ";
-    public static final String UPDATE_TAPETE = "UPDATE tapete SET rol = ?, metragem = ?, posicao = ? WHERE id = ?";
     public static final String[] COLUNAS_TAPETE = {"id","rol", "metragem","posicao"};
     private boolean isEditando;
     private int indexEditando;
@@ -95,9 +94,9 @@ public class TapeteActivity extends Fragment {
                 c.close();
             }else{
                 ContentValues cv = new ContentValues();
-                cv.put("rol", tapete.getRol());
-                cv.put("metragem", tapete.getMetragem());
-                cv.put("posicao", tapete.getPosicao());
+                cv.put(COLUNAS_TAPETE[1], tapete.getRol());
+                cv.put(COLUNAS_TAPETE[2], tapete.getMetragem());
+                cv.put(COLUNAS_TAPETE[3], tapete.getPosicao());
                 dados.update("tapete",cv,"id = "+tapete.getId(),null);
                 tapetes.set(indexEditando, tapete);
                 isEditando = false;
@@ -123,7 +122,8 @@ public class TapeteActivity extends Fragment {
             long rol = Long.parseLong(tapeteRol.getText().toString());
             double metragem = Double.parseDouble(metragemText.getText().toString());
             int posicao = Integer.parseInt(posicaoTapete.getText().toString());
-           Tapete tapete;
+            Tapete tapete;
+
             if(!isEditando) {
                  tapete = new Tapete(rol, metragem, posicao);
             }else{
