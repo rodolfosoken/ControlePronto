@@ -144,6 +144,12 @@ public class TapeteActivity extends Fragment {
         return ok;
     }
 
+    public boolean atualizaTapete(Context context, int index){
+        boolean ok = false;
+
+        return ok;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -177,6 +183,14 @@ public class TapeteActivity extends Fragment {
                             }
                         })
                         .setNegativeButton("Cancelar", null).show();
+            }
+        });
+
+        tapeteListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                return false;
             }
         });
 

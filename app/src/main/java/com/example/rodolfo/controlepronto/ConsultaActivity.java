@@ -154,6 +154,7 @@ public class ConsultaActivity extends Fragment {
                                 //atualiza a aba de tapetes apos modificar o banco de dados nesta tela
                                 TapeteActivity.selectTapete(getContext());
                                 EdredomActivity.selectEdredom(getContext());
+                                rolConsulta=null;
                             } catch (Exception e) {
                                 Log.e("Erro delete Rol ", e.toString());
                             } finally {
@@ -205,9 +206,12 @@ public class ConsultaActivity extends Fragment {
                                     Toast.makeText(getContext(), "Tapete excluido: "+tapetes.get(index).getRol(), Toast.LENGTH_SHORT).show();
                                     tapetes.remove(index);
                                     adaptadorTapete.notifyDataSetChanged();
-                                    tapeteText.setText("Edredom | Qtd.: "+tapetes.size());
+                                    tapeteText.setText("Tapete | Qtd.: "+tapetes.size());
                                     //atualiza a aba de tapetes apos modificar o banco de dados nesta tela
                                     TapeteActivity.selectTapete(getContext());
+                                    if (tapetes.size() == 0 && edredons.size() == 0) {
+                                        rolConsulta = null;
+                                    }
                                 }catch (Exception e){
                                     Log.e("Erro delete tapete ",e.toString());
                                 }finally {
@@ -251,6 +255,9 @@ public class ConsultaActivity extends Fragment {
                                     textEdredom.setText("Edredom | Qtd.: "+edredons.size());
                                     //atualiza a aba de edredons apos modificar o banco de dados nesta tela
                                     EdredomActivity.selectEdredom(getContext());
+                                    if (tapetes.size() == 0 && edredons.size() == 0) {
+                                        rolConsulta = null;
+                                    }
                                 }catch (Exception e){
                                     Log.e("Erro del edredom ",e.toString());
                                 }finally {
