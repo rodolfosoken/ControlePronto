@@ -112,12 +112,13 @@ public class TapeteActivity extends Fragment {
                 tapeteRol.requestFocus();
                 tapeteRol.getBackground().clearColorFilter();
                 metragemText.getBackground().clearColorFilter();
+                posicaoTapete.getBackground().clearColorFilter();
             }
         }else{
             tapeteRol.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SCREEN);
             metragemText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SCREEN);
             posicaoTapete.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SCREEN);
-            Toast.makeText(getContext(), "Insira o Rol e a Metragem", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Insira o Rol, Metragem e Posição", Toast.LENGTH_SHORT).show();
         }
     }
 
