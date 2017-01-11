@@ -1,6 +1,7 @@
 package com.example.rodolfo.controlepronto;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -8,12 +9,14 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -110,6 +113,27 @@ public class TapeteActivity extends Fragment {
         }
     }
 
+    public boolean removerTapete(Context context, int index){
+        boolean ok = false;
+
+        SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+        try{
+            dados.execSQL(DELETE_TAPETE + tapetes.get(index).getId());
+            Toast.makeText(context, "TAPETE excluido: "+tapetes.get(index).getId() , Toast.LENGTH_SHORT).show();
+            tapetes.remove(index);
+            adaptadorTapete.notifyDataSetChanged();
+
+            ConsultaActivity.tapetes.clear();
+            ConsultaActivity.adaptadorTapete.notifyDataSetChanged();
+            ok = true;
+        }catch(Exception e){
+            Log.e("BD delete Tapete", e.toString());
+        }finally {
+            dados.close();
+        }
+
+        return ok;
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -126,6 +150,25 @@ public class TapeteActivity extends Fragment {
         tapeteListView.setAdapter(adaptadorTapete);
 
         selectTapete(getContext());
+
+        tapeteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final int index = i;
+                //cria um alerta antes de excluir um tapete
+                new AlertDialog.Builder(getContext())
+                        .setIcon(android.R.drawable.ic_delete)
+                        .setTitle("Excluir")
+                        .setMessage("Excluir o Rol "+ tapetes.get(index).getRol()+"?")
+                        .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i2) {
+                                removerTapete(getContext(),index);
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null).show();
+            }
+        });
 
         //coloca o listener no botao
         bAdd.setOnClickListener(new View.OnClickListener() {

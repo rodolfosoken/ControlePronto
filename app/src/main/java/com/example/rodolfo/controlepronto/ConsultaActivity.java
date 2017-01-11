@@ -31,8 +31,11 @@ public class ConsultaActivity extends Fragment {
 
     public static List<Edredom> edredons;
     public static ArrayAdapter<Edredom> adaptadorEdredom;
+    public static List<Tapete> tapetes;
+    public static ArrayAdapter<Tapete> adaptadorTapete;
     EditText rolText;
     TextView textEdredom;
+    TextView tapeteText;
 
     public void consulta(View view){
         //limpa a busca
@@ -76,20 +79,21 @@ public class ConsultaActivity extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button bConsulta = (Button) getView().findViewById(R.id.okConsulta);
-        bConsulta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(rolText.getText().toString().isEmpty()){
-                    Toast.makeText(getContext(), "O Rol não pode ser vazio", Toast.LENGTH_SHORT).show();
-                }else {
-                    consulta(view);
-                }
-            }
-        });
-
-        ListView edredomList = (ListView) getView().findViewById(R.id.edredomConsulta);
         rolText = (EditText) getView().findViewById(R.id.rolConsulta);
+
+        //================ TAPETES =========================
+
+        ListView tapeteList = (ListView) getView().findViewById(R.id.tapeteListConsulta);
+        tapeteText = (TextView) getView().findViewById(R.id.textTapeteConsulta);
+
+        tapetes = new ArrayList<>();
+
+        adaptadorTapete = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, tapetes);
+        tapeteList.setAdapter(adaptadorTapete);
+
+
+        //================ EDREDOM =========================
+        ListView edredomList = (ListView) getView().findViewById(R.id.edredomConsulta);
         textEdredom =(TextView) getView().findViewById(R.id.textViewEdredom);
 
         edredons = new ArrayList<>();
@@ -130,6 +134,21 @@ public class ConsultaActivity extends Fragment {
             }
         });
 
+        //=============== Fim EDREDOM ======================================
+
+        //Coloca o listener no botao Ok de consulta
+        Button bConsulta = (Button) getView().findViewById(R.id.okConsulta);
+        bConsulta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(rolText.getText().toString().isEmpty()){
+                    Toast.makeText(getContext(), "O Rol não pode ser vazio", Toast.LENGTH_SHORT).show();
+                }else {
+                    consulta(view);
+                }
+            }
+        });
+
         //adicionar listener para fazer consulta ao pressionar enter
         rolText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -142,7 +161,7 @@ public class ConsultaActivity extends Fragment {
                 return ok;
             }
         });
-    }
+    } // fim onViewCreated
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
