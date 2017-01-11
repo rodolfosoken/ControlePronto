@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -33,21 +34,24 @@ public class ConsultaActivity extends Fragment {
     public static ArrayAdapter<Edredom> adaptadorEdredom;
     public static List<Tapete> tapetes;
     public static ArrayAdapter<Tapete> adaptadorTapete;
+    public static String rolConsulta;
+    public static final String DELETE_TAPETE_ROL = "DELETE FROM tapete WHERE rol = ";
+    public static final String DELETE_EDREDOM_ROL = "DELETE FROM edredom WHERE rol = ";
     EditText rolText;
     TextView textEdredom;
     TextView tapeteText;
 
     public void consulta(View view){
-        String rolConsulta = rolText.getText().toString();
+        rolConsulta = rolText.getText().toString();
 
         //============ CONSULTA DE EDREDOM =========
 
         //limpa a busca
         edredons.clear();
 
-        SQLiteDatabase dadosEdredom = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+        SQLiteDatabase dados = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try{
-            Cursor c = dadosEdredom.rawQuery(EdredomActivity.SELECT_EDREDONS+ "WHERE rol = " + rolConsulta, null);
+            Cursor c = dados.rawQuery(EdredomActivity.SELECT_EDREDONS+ "WHERE rol = " + rolConsulta, null);
 
             textEdredom.setText("Edredom | Qtd.: "+c.getCount());
             if(c.getCount() == 0){
@@ -72,8 +76,6 @@ public class ConsultaActivity extends Fragment {
         }catch (Exception e){
             Log.e("Erro consulta Edredom", e.toString());
             e.printStackTrace();
-        }finally {
-            dadosEdredom.close();
         }
         adaptadorEdredom.notifyDataSetChanged();
 
@@ -82,9 +84,8 @@ public class ConsultaActivity extends Fragment {
         //limpa a consulta de tapetes
         tapetes.clear();
 
-        SQLiteDatabase dadosTapete = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try{
-            Cursor cT = dadosTapete.rawQuery(TapeteActivity.SELECT_TAPETES + "WHERE rol = "+rolConsulta, null);
+            Cursor cT = dados.rawQuery(TapeteActivity.SELECT_TAPETES + "WHERE rol = "+rolConsulta, null);
 
             tapeteText.setText("Tapete | Qtd.: "+cT.getCount());
 
@@ -110,9 +111,43 @@ public class ConsultaActivity extends Fragment {
         }catch (Exception e){
             Log.e("BD select Tapete", e.toString());
         }finally {
-            dadosTapete.close();
+            dados.close();
         }
         adaptadorTapete.notifyDataSetChanged();
+    }
+
+    public void deleteRol(View view){
+
+       new AlertDialog.Builder(getContext())
+        .setIcon(android.R.drawable.ic_delete)
+        .setTitle("Excluir")
+        .setMessage("Excluir todos os itens do Rol "+ rolConsulta +"?")
+        .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i2) {
+                SQLiteDatabase dados = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+                try {
+                    dados.execSQL(DELETE_EDREDOM_ROL + rolConsulta);
+                    dados.execSQL(DELETE_TAPETE_ROL+ rolConsulta);
+                    Toast.makeText(getContext(), "Rol excluido: "+rolConsulta, Toast.LENGTH_SHORT).show();
+                    edredons.clear();
+                    tapetes.clear();
+                    tapeteText.setText("Edredom | Qtd.: "+tapetes.size());
+                    textEdredom.setText("Tapete | Qtd.: "+edredons.size());
+                    //atualiza a aba de tapetes apos modificar o banco de dados nesta tela
+                    TapeteActivity.selectTapete(getContext());
+                    EdredomActivity.selectEdredom(getContext());
+                }catch (Exception e){
+                    Log.e("Erro delete Rol ",e.toString());
+                }finally {
+                    dados.close();
+                    adaptadorEdredom.notifyDataSetChanged();
+                    adaptadorTapete.notifyDataSetChanged();
+                }
+            }
+        })
+        .setNegativeButton("Cancelar", null).show();
+
     }
 
     @Override
@@ -209,6 +244,15 @@ public class ConsultaActivity extends Fragment {
 
         //=============== Fim EDREDOM ======================================
 
+        //adiciona listener ao botao de exclusão
+        FloatingActionButton botaoDelete = (FloatingActionButton) getView().findViewById(R.id.botaoDelete);
+        botaoDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteRol(view);
+            }
+        });
+
         //Coloca o listener no botao Ok de consulta
         Button bConsulta = (Button) getView().findViewById(R.id.okConsulta);
         bConsulta.setOnClickListener(new View.OnClickListener() {
@@ -228,8 +272,12 @@ public class ConsultaActivity extends Fragment {
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 boolean ok = false;
                 if (i == EditorInfo.IME_ACTION_GO){
-                    consulta(getView());
-                    ok = true;
+                    if(rolText.getText().toString().isEmpty()){
+                        Toast.makeText(getContext(), "O Rol não pode ser vazio", Toast.LENGTH_SHORT).show();
+                    }else {
+                        consulta(getView());
+                        ok = true;
+                    }
                 }
                 return ok;
             }
