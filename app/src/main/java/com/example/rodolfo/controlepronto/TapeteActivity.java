@@ -186,13 +186,13 @@ public class TapeteActivity extends Fragment {
             }
         });
 
-        tapeteListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+/*        tapeteListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 return false;
             }
-        });
+        });*/
 
         //coloca o listener no botao
         bAdd.setOnClickListener(new View.OnClickListener() {

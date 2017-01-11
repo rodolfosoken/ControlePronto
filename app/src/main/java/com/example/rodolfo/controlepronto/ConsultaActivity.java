@@ -130,6 +130,11 @@ public class ConsultaActivity extends Fragment {
             dados.close();
         }
         adaptadorTapete.notifyDataSetChanged();
+
+        //limpar referencia quando não consta mais nada ou não há resultados
+        if (tapetes.size() == 0 && edredons.size() == 0) {
+            rolConsulta = null;
+        }
     }
 
     public void deleteRol(View view) {
@@ -209,6 +214,7 @@ public class ConsultaActivity extends Fragment {
                                     tapeteText.setText("Tapete | Qtd.: "+tapetes.size());
                                     //atualiza a aba de tapetes apos modificar o banco de dados nesta tela
                                     TapeteActivity.selectTapete(getContext());
+                                    //limpar referencia quando não consta mais nada
                                     if (tapetes.size() == 0 && edredons.size() == 0) {
                                         rolConsulta = null;
                                     }
