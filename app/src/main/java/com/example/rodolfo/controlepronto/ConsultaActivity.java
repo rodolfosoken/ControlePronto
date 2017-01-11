@@ -69,7 +69,7 @@ public class ConsultaActivity extends Fragment {
 
             textEdredom.setText("Edredom | Qtd.: "+c.getCount());
             if(c.getCount() == 0){
-                Toast.makeText(getContext(), "Nenhum edredom encontrado", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Nenhum edredom encontrado", Toast.LENGTH_SHORT).show();
             }else {
                 int indexId = c.getColumnIndex(EdredomActivity.COLUNAS_EDREDOM[0]);
                 int indexRol = c.getColumnIndex(EdredomActivity.COLUNAS_EDREDOM[1]);
@@ -104,7 +104,7 @@ public class ConsultaActivity extends Fragment {
             tapeteText.setText("Tapete | Qtd.: "+cT.getCount());
 
             if(cT.getCount() == 0) {
-                Toast.makeText(getContext(), "Nenhum tapete encontrado", Toast.LENGTH_SHORT).show();
+                if (edredons.size()== 0) Toast.makeText(getContext(), "Nenhum tapete ou edredom encontrado", Toast.LENGTH_SHORT).show();
             }else{
                 int indexId = cT.getColumnIndex(TapeteActivity.COLUNAS_TAPETE[0]);
                 int indexRol = cT.getColumnIndex(TapeteActivity.COLUNAS_TAPETE[1]);
