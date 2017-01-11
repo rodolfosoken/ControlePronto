@@ -86,6 +86,8 @@ public class ConsultaActivity extends Fragment {
         try{
             Cursor cT = dadosTapete.rawQuery(TapeteActivity.SELECT_TAPETES + "WHERE rol = "+rolConsulta, null);
 
+            tapeteText.setText("Tapete | Qtd.: "+cT.getCount());
+
             if(cT.getCount() == 0) {
                 Toast.makeText(getContext(), "Nenhum tapete encontrado", Toast.LENGTH_SHORT).show();
             }else{
@@ -128,6 +130,39 @@ public class ConsultaActivity extends Fragment {
 
         adaptadorTapete = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, tapetes);
         tapeteList.setAdapter(adaptadorTapete);
+
+        //listener para excluir tapetes do banco de dados
+        tapeteList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final int index = i;
+                //cria um alerta antes de excluir um edredom
+                new AlertDialog.Builder(getContext())
+                        .setIcon(android.R.drawable.ic_delete)
+                        .setTitle("Excluir")
+                        .setMessage("Excluir o Rol "+ tapetes.get(index).getRol()+"?")
+                        .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i2) {
+                                SQLiteDatabase dados = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+                                try {
+                                    dados.execSQL(TapeteActivity.DELETE_TAPETE + tapetes.get(index).getId());
+                                    Toast.makeText(getContext(), "Tapete excluido: "+tapetes.get(index).getRol(), Toast.LENGTH_SHORT).show();
+                                    tapetes.remove(index);
+                                    adaptadorTapete.notifyDataSetChanged();
+                                    tapeteText.setText("Edredom | Qtd.: "+tapetes.size());
+                                    //atualiza a aba de tapetes apos modificar o banco de dados nesta tela
+                                    TapeteActivity.selectTapete(getContext());
+                                }catch (Exception e){
+                                    Log.e("Erro delete tapete ",e.toString());
+                                }finally {
+                                    dados.close();
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null).show();
+            }
+        });
 
 
         //================ EDREDOM =========================

@@ -52,7 +52,7 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="165dp"
+            android:layout_height="201dp"
             android:id="@+id/edredomConsulta"
             android:fadeScrollbars="false" />
 
