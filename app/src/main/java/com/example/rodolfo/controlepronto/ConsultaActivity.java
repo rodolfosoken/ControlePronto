@@ -49,15 +49,6 @@ public class ConsultaActivity extends Fragment {
 
         SQLiteDatabase dados = getContext().openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
 
-        // =======  REGISTRA CONSULTA NO HISTORICO =======
-
-        try{
-            SimpleDateFormat sdf = new SimpleDateFormat("DD-MM-yyyy HH:MM");
-            String currentDateandTime = sdf.format(new Date());
-            dados.execSQL(INSERT_REGISTRO_HISTORICO+ "("+rolConsulta+", '"+currentDateandTime+"')");
-        }catch (Exception e){
-            Log.e("Registro no historico", e.toString());
-        }
 
 
         //============ CONSULTA DE EDREDOM =========
@@ -124,6 +115,22 @@ public class ConsultaActivity extends Fragment {
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
             cT.close();
+
+            //limpar referencia quando não consta mais nada ou não há resultados
+            if (tapetes.size() == 0 && edredons.size() == 0) {
+                rolConsulta = null;
+            }else{
+                // =======  REGISTRA CONSULTA NO HISTORICO =======
+
+                try{
+                    SimpleDateFormat sdf = new SimpleDateFormat("DD-MM-yyyy HH:MM");
+                    String currentDateandTime = sdf.format(new Date());
+                    dados.execSQL(INSERT_REGISTRO_HISTORICO+ "("+rolConsulta+", '"+currentDateandTime+"')");
+                }catch (Exception e){
+                    Log.e("Registro no historico", e.toString());
+                }
+            }
+
         }catch (Exception e){
             Log.e("BD select Tapete", e.toString());
         }finally {
@@ -131,10 +138,7 @@ public class ConsultaActivity extends Fragment {
         }
         adaptadorTapete.notifyDataSetChanged();
 
-        //limpar referencia quando não consta mais nada ou não há resultados
-        if (tapetes.size() == 0 && edredons.size() == 0) {
-            rolConsulta = null;
-        }
+
     }
 
     public void deleteRol(View view) {
