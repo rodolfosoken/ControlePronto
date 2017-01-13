@@ -329,4 +329,9 @@ public class ConsultaActivity extends Fragment {
         return inflater.inflate(R.layout.fragment_consulta, container, false);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        rolConsulta = null;
+    }
 }
