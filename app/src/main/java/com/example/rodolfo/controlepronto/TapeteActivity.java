@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -36,6 +38,7 @@ public class TapeteActivity extends Fragment {
     private EditText tapeteRol;
     private EditText metragemText;
     private EditText posicaoTapete;
+    private EditText consultaText;
     public static final String SELECT_TAPETES = "SELECT * FROM tapete ";
     public static final String INSERT_TAPETE = "INSERT INTO tapete (rol, metragem, posicao) VALUES ";
     public static final String DELETE_TAPETE = "DELETE FROM tapete WHERE id = ";
@@ -52,6 +55,38 @@ public class TapeteActivity extends Fragment {
         SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try{
             Cursor c = dados.rawQuery(SELECT_TAPETES, null);
+            int indexId = c.getColumnIndex(COLUNAS_TAPETE[0]);
+            int indexRol = c.getColumnIndex(COLUNAS_TAPETE[1]);
+            int indexMetragem = c.getColumnIndex(COLUNAS_TAPETE[2]);
+            int indexPosicao = c.getColumnIndex(COLUNAS_TAPETE[3]);
+
+            if (c.moveToFirst()){
+                do {
+                    Tapete tapete = new Tapete(c.getInt(indexId), c.getLong(indexRol),
+                            c.getDouble(indexMetragem), c.getInt(indexPosicao));
+                    tapetesList.add(0, tapete);
+                    tapetes.add(0, tapete);
+                }while(c.moveToNext());
+            }
+            c.close();
+        }catch (Exception e){
+            Log.e("BD select Tapete", e.toString());
+        }finally {
+            dados.close();
+            adaptadorTapete.notifyDataSetChanged();
+        }
+
+        return tapetesList;
+    }
+
+    public static List<Tapete> selectTapete(Context context, String sql){
+        List<Tapete> tapetesList = new ArrayList<>();
+        //limpa a lista de tapetes
+        tapetes.clear();
+
+        SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+        try{
+            Cursor c = dados.rawQuery(sql, null);
             int indexId = c.getColumnIndex(COLUNAS_TAPETE[0]);
             int indexRol = c.getColumnIndex(COLUNAS_TAPETE[1]);
             int indexMetragem = c.getColumnIndex(COLUNAS_TAPETE[2]);
@@ -196,6 +231,7 @@ public class TapeteActivity extends Fragment {
         posicaoTapete = (EditText) getView().findViewById(R.id.posicaoTapete);
         tapeteRol = (EditText) getView().findViewById(R.id.rolTapete);
         metragemText = (EditText) getView().findViewById(R.id.metragemText);
+        consultaText = (EditText) getView().findViewById(R.id.consultaTapete); 
         ListView tapeteListView = (ListView) getView().findViewById(R.id.tapeteList);
         Button bAdd = (Button) getView().findViewById(R.id.bAdicionarTapete);
 
@@ -264,6 +300,36 @@ public class TapeteActivity extends Fragment {
                 return false;
             }
         });
+        
+        
+
+        //faz uma consulta a cada mundança na consulta rápida
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(consultaText.isFocused()){
+                    String consulta = consultaText.getText().toString();
+                    if(consulta.isEmpty()) {
+                        selectTapete(getContext());
+                    }else {
+                        selectTapete(getContext(), "SELECT * FROM tapete WHERE rol LIKE '" + consulta+"%'");
+                    }
+                }
+            }
+        };
+
+        consultaText.addTextChangedListener(textWatcher);
+
 
 
     }

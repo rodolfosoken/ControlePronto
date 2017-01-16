@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -39,6 +41,7 @@ public class EdredomActivity extends Fragment {
     public static final String[] COLUNAS_EDREDOM = {"id","rol", "prateleira","retirado"};
     private EditText rolText;
     private EditText prateleiraText;
+    private EditText consultaText;
     private boolean isEditando;
     private int indexEditando;
 
@@ -77,6 +80,41 @@ public class EdredomActivity extends Fragment {
         }
         return edredomList;
     }
+
+    public static List<Edredom> selectEdredom(Context context, String sql){
+        List<Edredom> edredomList = new ArrayList<>();
+        //limpa a lista de edredons
+        edredons.clear();
+        //tenta recuperar todos os edredons do banco de dados
+        SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
+        try {
+            Cursor c = dados.rawQuery(sql, null);
+
+            int indexId = c.getColumnIndex(COLUNAS_EDREDOM[0]);
+            int indexRol = c.getColumnIndex(COLUNAS_EDREDOM[1]);
+            int indexPrateleira = c.getColumnIndex(COLUNAS_EDREDOM[2]);
+            int indexRetirado = c.getColumnIndex(COLUNAS_EDREDOM[3]);
+
+            if(c.moveToFirst()) {
+                do {
+                    Edredom edredom = new Edredom(c.getInt(indexId), c.getLong(indexRol),
+                            c.getInt(indexPrateleira), c.getInt(indexRetirado));
+                    //add no indice 0 para inverter a ordem da lista
+                    edredomList.add(0, edredom);
+                    edredons.add(0,edredom);
+                    //System.out.println(edredom.toString());
+                } while (c.moveToNext());
+            }
+            c.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            dados.close();
+            adaptadorEdredom.notifyDataSetChanged();
+        }
+        return edredomList;
+    }
+
 
     public boolean salvaEdredom(Context context, Edredom edredom){
         boolean ok = false;
@@ -164,10 +202,6 @@ public class EdredomActivity extends Fragment {
                 rolText.setText("");
                 prateleiraText.setText("");
                 rolText.requestFocus();
-                //esconde o teclado
-                /*InputMethodManager imm = (InputMethodManager)
-                getContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);*/
                 //restaura a cor dos editTexts
                 rolText.getBackground().clearColorFilter();
                 prateleiraText.getBackground().clearColorFilter();
@@ -207,7 +241,7 @@ public class EdredomActivity extends Fragment {
 
         rolText = (EditText) getView().findViewById(R.id.rolEdredom);
         prateleiraText = (EditText) getView().findViewById(R.id.prateleiraText);
-
+        consultaText = (EditText) getView().findViewById(R.id.consultaEdredom);
 
         //adiciona o listener no botao adicionar
         Button buttonAdicionar = (Button) getView().findViewById(R.id.bAdicionarEdredom);
@@ -281,6 +315,33 @@ public class EdredomActivity extends Fragment {
             }
         });
 
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(consultaText.isFocused()){
+                    String consulta = consultaText.getText().toString();
+                    if(consulta.isEmpty()) {
+                        selectEdredom(getContext());
+                    }else {
+                        selectEdredom(getContext(), "SELECT * FROM edredom WHERE rol LIKE '" + consulta+"%'");
+                    }
+                }
+
+            }
+        };
+
+        consultaText.addTextChangedListener(textWatcher);
 
 
     }
