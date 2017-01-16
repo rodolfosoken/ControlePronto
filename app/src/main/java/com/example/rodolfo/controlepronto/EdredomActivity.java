@@ -204,6 +204,7 @@ public class EdredomActivity extends Fragment {
                         //restaura a cor dos editTexts
                         rolText.getBackground().clearColorFilter();
                         prateleiraText.getBackground().clearColorFilter();
+                        selectEdredom(getContext());
                     } else {
                         Toast.makeText(getContext(), "Erro: edredom não cadastrado!", Toast.LENGTH_SHORT).show();
                     }
