@@ -115,6 +115,7 @@ public class TapeteActivity extends Fragment {
         boolean ok = false;
         SQLiteDatabase dados = context.openOrCreateDatabase(MainActivity.NOME_BD, Context.MODE_PRIVATE, null);
         try {
+            //se não estiver editando, então fazer uma inserção
             if(!isEditando) {
                 dados.execSQL(INSERT_TAPETE + " (" + tapete.getRol() + ", "
                         + tapete.getMetragem() + "," + tapete.getPosicao() + ")");
@@ -157,22 +158,69 @@ public class TapeteActivity extends Fragment {
             long rol = Long.parseLong(tapeteRol.getText().toString());
             double metragem = Double.parseDouble(metragemText.getText().toString());
             int posicao = Integer.parseInt(posicaoTapete.getText().toString());
-            Tapete tapete;
+            final Tapete tapete;
 
             if(!isEditando) {
+            //está sendo adicionado um novo tapete
                  tapete = new Tapete(rol, metragem, posicao);
+                //faz uma consulta rápida para verificar se o rol já existe.
+                if (selectTapete(getContext(),SELECT_TAPETES+" WHERE rol LIKE '"+tapete.getRol()+"%'").isEmpty()) {
+                    //se salvar for bem sucedido, então limpar os campos
+                    if(salvarTapete(getContext(),tapete)){
+                        tapeteRol.setText("");
+                        metragemText.setText("");
+                        posicaoTapete.setText("");
+                        tapeteRol.requestFocus();
+                        tapeteRol.getBackground().clearColorFilter();
+                        metragemText.getBackground().clearColorFilter();
+                        posicaoTapete.getBackground().clearColorFilter();
+                    }else{
+                        Toast.makeText(getContext(), "Tapete não cadastrado", Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                 // já existe um rol com o mesmo número
+                 // cria um alerta antes de adicionar o mesmo rol
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Rol existente")
+                            .setMessage("O Rol "+ tapete.getRol()+" já existe, deseja adicionar?")
+                            .setPositiveButton("Adicionar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i2) {
+                                    //editar
+                                    if(salvarTapete(getContext(), tapete)){
+                                        tapeteRol.setText("");
+                                        metragemText.setText("");
+                                        posicaoTapete.setText("");
+                                        tapeteRol.requestFocus();
+                                        tapeteRol.getBackground().clearColorFilter();
+                                        metragemText.getBackground().clearColorFilter();
+                                        posicaoTapete.getBackground().clearColorFilter();
+                                        selectTapete(getContext());
+                                    }else{
+                                        Toast.makeText(getContext(), "Erro: Tapete não cadastrado", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancelar", null).show();
+                }
+            //tapete está sendo editado
             }else{
                 tapete = new Tapete(tapetes.get(indexEditando).getId(), rol, metragem, posicao);
+                //se salvar for bem sucedido, então limpar os campos
+                if(salvarTapete(getContext(),tapete)){
+                    tapeteRol.setText("");
+                    metragemText.setText("");
+                    posicaoTapete.setText("");
+                    tapeteRol.requestFocus();
+                    tapeteRol.getBackground().clearColorFilter();
+                    metragemText.getBackground().clearColorFilter();
+                    posicaoTapete.getBackground().clearColorFilter();
+                }else{
+                    Toast.makeText(getContext(), "Tapete não cadastrado", Toast.LENGTH_LONG).show();
+                }
             }
-            if(salvarTapete(getContext(),tapete)){
-                tapeteRol.setText("");
-                metragemText.setText("");
-                posicaoTapete.setText("");
-                tapeteRol.requestFocus();
-                tapeteRol.getBackground().clearColorFilter();
-                metragemText.getBackground().clearColorFilter();
-                posicaoTapete.getBackground().clearColorFilter();
-            }
+
         }else{
             tapeteRol.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SCREEN);
             metragemText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SCREEN);

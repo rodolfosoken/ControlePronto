@@ -180,8 +180,8 @@ public class EdredomActivity extends Fragment {
 
     //ação do botao adicionar
     public void adicionarEdredom(View view){
-        EditText rolText = (EditText) getView().findViewById(R.id.rolEdredom);
-        EditText prateleiraText = (EditText) getView().findViewById(R.id.prateleiraText);
+        final EditText rolText = (EditText) getView().findViewById(R.id.rolEdredom);
+        final EditText prateleiraText = (EditText) getView().findViewById(R.id.prateleiraText);
         //System.out.println(rolText.getText().toString());
 
         //verifica se a entrada está vazia antes de inserir no banco de dados
@@ -189,23 +189,68 @@ public class EdredomActivity extends Fragment {
             long rol = Long.parseLong(rolText.getText().toString());
             int prateleira = Integer.parseInt(prateleiraText.getText().toString());
 
-            Edredom edredom;
+            final Edredom edredom;
+            //se não estiver editando, então inserir um novo edredom
             if (!isEditando) {
                 edredom = new Edredom(rol, prateleira);
-                //System.out.println(edredom.toString());
+                //faz uma consulta rápida para verificar se já existe um rol com o mesmo número
+                if (selectEdredom(getContext(),SELECT_EDREDONS+" WHERE rol LIKE '"+edredom.getRol()+"'").isEmpty()) {
+                    //salva no banco de dados
+                    if (salvaEdredom(getContext(), edredom)) {
+                        //limpa a entrada
+                        rolText.setText("");
+                        prateleiraText.setText("");
+                        rolText.requestFocus();
+                        //restaura a cor dos editTexts
+                        rolText.getBackground().clearColorFilter();
+                        prateleiraText.getBackground().clearColorFilter();
+                    } else {
+                        Toast.makeText(getContext(), "Erro: edredom não cadastrado!", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    //caso exista um edredom com o mesmo numero de rol, perguntar se deseja adicionar
+
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_menu_edit)
+                            .setTitle("Rol já existe")
+                            .setMessage("O Rol "+ edredom.getRol()+" já existe, deseja adicionar?")
+                            .setPositiveButton("Adicionar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i2) {
+                                    //adicionar
+                                    if (salvaEdredom(getContext(), edredom)) {
+                                        //limpa a entrada
+                                        rolText.setText("");
+                                        prateleiraText.setText("");
+                                        rolText.requestFocus();
+                                        //restaura a cor dos editTexts
+                                        rolText.getBackground().clearColorFilter();
+                                        prateleiraText.getBackground().clearColorFilter();
+                                        selectEdredom(getContext());
+                                    } else {
+                                        Toast.makeText(getContext(), "Erro: edredom não cadastrado!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancelar", null).show();
+
+                }
             }else{
                 edredom = new Edredom(edredons.get(indexEditando).getId(), rol, prateleira, 0);
+                //salva no banco de dados
+                if(salvaEdredom(getContext(),edredom)) {
+                    //limpa a entrada
+                    rolText.setText("");
+                    prateleiraText.setText("");
+                    rolText.requestFocus();
+                    //restaura a cor dos editTexts
+                    rolText.getBackground().clearColorFilter();
+                    prateleiraText.getBackground().clearColorFilter();
+                }else{
+                    Toast.makeText(getContext(), "Erro: edredom não cadastrado!", Toast.LENGTH_SHORT).show();
+                }
             }
-            //salva no banco de dados
-            if(salvaEdredom(getContext(),edredom)) {
-                //limpa a entrada
-                rolText.setText("");
-                prateleiraText.setText("");
-                rolText.requestFocus();
-                //restaura a cor dos editTexts
-                rolText.getBackground().clearColorFilter();
-                prateleiraText.getBackground().clearColorFilter();
-            }
+
         }else {
             rolText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SCREEN);
             prateleiraText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SCREEN);
@@ -315,7 +360,7 @@ public class EdredomActivity extends Fragment {
             }
         });
 
-
+        //faz uma nova consulta a cada mudança de texto em consulta rápida
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
