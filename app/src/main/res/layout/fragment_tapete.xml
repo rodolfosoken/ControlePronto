@@ -60,13 +60,27 @@
 
         </LinearLayout>
 
-        <EditText
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/consultaTapete"
-            android:hint="Consulta Rápida (Nº Rol)" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:text="Limpar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/limparCampos" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/consultaTapete"
+                android:hint="Consulta Rápida (Nº Rol)"
+                android:layout_weight="2.58" />
+
+        </LinearLayout>
 
         <ListView
             android:layout_width="match_parent"

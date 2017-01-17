@@ -44,6 +44,7 @@ public class EdredomActivity extends Fragment {
     private EditText consultaText;
     private boolean isEditando;
     private int indexEditando;
+    private Button limparCampos;
 
 
     //retorna a listagem com os edredons do banco de dados e tbm atualiza a lista da aba de edredons
@@ -280,6 +281,15 @@ public class EdredomActivity extends Fragment {
         return ok;
     }
 
+    public void apagaCampos(){
+        //limpa a entrada
+        rolText.setText("");
+        prateleiraText.setText("");
+        consultaText.setText("");
+        rolText.requestFocus();
+        selectEdredom(getContext());
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -288,6 +298,7 @@ public class EdredomActivity extends Fragment {
         rolText = (EditText) getView().findViewById(R.id.rolEdredom);
         prateleiraText = (EditText) getView().findViewById(R.id.prateleiraText);
         consultaText = (EditText) getView().findViewById(R.id.consultaEdredom);
+        limparCampos = (Button) getView().findViewById(R.id.limparCampos);
 
         //adiciona o listener no botao adicionar
         Button buttonAdicionar = (Button) getView().findViewById(R.id.bAdicionarEdredom);
@@ -389,6 +400,13 @@ public class EdredomActivity extends Fragment {
 
         consultaText.addTextChangedListener(textWatcher);
 
+        //adiciona ação ao botao de limpar campos
+        limparCampos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                apagaCampos();
+            }
+        });
 
     }
 

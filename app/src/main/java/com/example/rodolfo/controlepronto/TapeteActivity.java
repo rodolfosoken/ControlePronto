@@ -39,6 +39,7 @@ public class TapeteActivity extends Fragment {
     private EditText metragemText;
     private EditText posicaoTapete;
     private EditText consultaText;
+    private Button limparCampos;
     public static final String SELECT_TAPETES = "SELECT * FROM tapete ";
     public static final String INSERT_TAPETE = "INSERT INTO tapete (rol, metragem, posicao) VALUES ";
     public static final String DELETE_TAPETE = "DELETE FROM tapete WHERE id = ";
@@ -160,6 +161,7 @@ public class TapeteActivity extends Fragment {
             int posicao = Integer.parseInt(posicaoTapete.getText().toString());
             final Tapete tapete;
 
+            //isEditando muda de estado ao salvar
             if(!isEditando) {
             //está sendo adicionado um novo tapete
                  tapete = new Tapete(rol, metragem, posicao);
@@ -217,7 +219,7 @@ public class TapeteActivity extends Fragment {
                     metragemText.getBackground().clearColorFilter();
                     posicaoTapete.getBackground().clearColorFilter();
                 }else{
-                    Toast.makeText(getContext(), "Tapete não cadastrado", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Erro: Tapete não cadastrado", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -271,6 +273,15 @@ public class TapeteActivity extends Fragment {
         return ok;
     }
 
+    public void apagarCampos(){
+        tapeteRol.setText("");
+        metragemText.setText("");
+        posicaoTapete.setText("");
+        consultaText.setText("");
+        tapeteRol.requestFocus();
+        selectTapete(getContext());
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -279,9 +290,10 @@ public class TapeteActivity extends Fragment {
         posicaoTapete = (EditText) getView().findViewById(R.id.posicaoTapete);
         tapeteRol = (EditText) getView().findViewById(R.id.rolTapete);
         metragemText = (EditText) getView().findViewById(R.id.metragemText);
-        consultaText = (EditText) getView().findViewById(R.id.consultaTapete); 
+        consultaText = (EditText) getView().findViewById(R.id.consultaTapete);
         ListView tapeteListView = (ListView) getView().findViewById(R.id.tapeteList);
         Button bAdd = (Button) getView().findViewById(R.id.bAdicionarTapete);
+        limparCampos = (Button) getView().findViewById(R.id.limparCampos);
 
         //inicializa a list de tapetes
         tapetes = new ArrayList<>();
@@ -378,6 +390,13 @@ public class TapeteActivity extends Fragment {
 
         consultaText.addTextChangedListener(textWatcher);
 
+        //adiciona ação ao botão de limpar campos
+        limparCampos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                apagarCampos();
+            }
+        });
 
 
     }
